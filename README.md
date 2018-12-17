@@ -15,6 +15,14 @@ library, please visit:
 
 http://libtins.github.io/
 
+## Why fork?
+
+* Changed CMakeLists.txt:
+    * Path to pcap (`../libpcap`)
+    * Build static lib
+* Fixed ivp6_address for msys2 clang
+    * There was no `RtlIpv6StringToAddressExA`
+
 ## Compiling ##
 
 [libtins](http://libtins.github.io/) depends on 
