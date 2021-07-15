@@ -49,7 +49,7 @@ ENDIF(LIBTINS_BUILD_SHARED)
 
 # The version number.
 SET(TINS_VERSION_MAJOR 4)
-SET(TINS_VERSION_MINOR 1)
+SET(TINS_VERSION_MINOR 4)
 SET(TINS_VERSION_PATCH 0)
 SET(LIBTINS_VERSION "${TINS_VERSION_MAJOR}.${TINS_VERSION_MINOR}")
 
@@ -237,6 +237,9 @@ CONFIGURE_FILE(
 IF (NOT CMAKE_INSTALL_LIBDIR)
     SET(CMAKE_INSTALL_LIBDIR lib)
 ENDIF()
+IF (NOT CMAKE_INSTALL_BINDIR)
+    SET(CMAKE_INSTALL_BINDIR bin)
+ENDIF()
 # The library output directory
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
@@ -311,6 +314,12 @@ ENDIF()
 # CMake project configuration export
 # **********************************
 
+if(UNIX)
+    set(CONF_CMAKE_INSTALL_DIR lib/cmake/libtins)
+else()
+    set(CONF_CMAKE_INSTALL_DIR CMake)
+endif()
+
 # Add all targets to the build-tree export set
 EXPORT(
     TARGETS tins
@@ -337,13 +346,13 @@ INSTALL(
     FILES
     "${PROJECT_BINARY_DIR}/libtinsConfig.cmake"
     "${PROJECT_BINARY_DIR}/libtinsConfigVersion.cmake"
-    DESTINATION CMake
+    DESTINATION ${CONF_CMAKE_INSTALL_DIR}
     COMPONENT dev
 )
 
 # Install the export set for use with the install-tree
 INSTALL(
     EXPORT libtinsTargets
-    DESTINATION CMake
+    DESTINATION ${CONF_CMAKE_INSTALL_DIR}
     COMPONENT dev
 )

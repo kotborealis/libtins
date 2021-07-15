@@ -70,12 +70,12 @@ void PacketWriter::write(Packet& packet) {
 }
 
 void PacketWriter::write(PDU& pdu, const struct timeval& tv) {
-    PDU::serialization_type buffer = pdu.serialize();
     struct pcap_pkthdr header;
     memset(&header, 0, sizeof(header));
     header.ts = tv;
+    header.len = static_cast<bpf_u_int32>(pdu.advertised_size());
+    PDU::serialization_type buffer = pdu.serialize();
     header.caplen = static_cast<bpf_u_int32>(buffer.size());
-    header.len = static_cast<bpf_u_int32>(buffer.size());
     pcap_dump((u_char*)dumper_, &header, &buffer[0]);
 }
 
@@ -86,8 +86,9 @@ void PacketWriter::init(const string& file_name, int link_type) {
     }
     dumper_ = pcap_dump_open(handle_, file_name.c_str());
     if (!dumper_) {
+        string error(pcap_geterr(handle_));
         pcap_close(handle_);
-        throw pcap_error(pcap_geterr(handle_));
+        throw pcap_error(error);
     }
 }
 
